@@ -3,3 +3,4 @@ databases
 logs
 .vscode
 .env
+pnpm-lock.yaml
