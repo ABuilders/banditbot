@@ -105,7 +105,7 @@ Bandit Bot is licensed under the [MIT License](LICENSE).
 - **GitHub**: [Bandit Bot Repository](https://github.com/abuilders/banditbot)
 - **Twitter**: [@sabdullahcxd](https://twitter.com/sabdullahcxd)
 - **Email**: [send@abdullahcxd.is-a.dev](mailto:send@abdullahcxd.is-a.dev)
-- **Discord**: [ABuilder's discord server](https://discord.gg/)
+- **Discord**: [ABuilder's discord server](https://discord.gg/MsswdRn7kn)
 
 ---
 
