@@ -4,3 +4,4 @@ logs
 .vscode
 .env
 pnpm-lock.yaml
+src/commands/auto/Test_*.ts

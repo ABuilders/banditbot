@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-11 19:35:04
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:52:33
+ * @ Modified time: 2025-02-12 15:03:44
  */
 
 import { Collection } from "discord.js";
@@ -160,4 +160,12 @@ export class ClientCollection<K extends keyof any, V> extends Collection<K, V>
     {
         return new ClientCollection<K, V>(Object.entries(obj) as [K, V][]);
     }
+
+    getIndex(index: number): [K, V] | undefined {
+        const keyIndex = this.keyAt(index);
+        if (!keyIndex) return undefined;
+        const valueIndex = this.get(keyIndex);
+        if (!valueIndex) return undefined;
+        return [keyIndex, valueIndex];
+    } 
 }
