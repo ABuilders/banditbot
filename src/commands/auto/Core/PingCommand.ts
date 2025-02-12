@@ -2,11 +2,11 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 22:08:04
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:54:08
+ * @ Modified time: 2025-02-12 15:44:44
  */
 
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { CommandBase, EnumCommandCategory } from "../../structures";
+import { CommandBase, EnumCommandCategory } from "../../../structures";
 
 export default class PingCommand extends CommandBase {
     constructor() {

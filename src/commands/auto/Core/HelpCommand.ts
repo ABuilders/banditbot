@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 23:13:33
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:54:27
+ * @ Modified time: 2025-02-12 15:44:47
  */
 
 import
@@ -17,7 +17,7 @@ import
     ActionRowBuilder,
     ButtonBuilder
 } from "discord.js";
-import { CommandBase, EnumCommandCategory, EnumCommandCategoryType } from "../../structures";
+import { CommandBase, EnumCommandCategory, EnumCommandCategoryType } from "../../../structures";
 
 interface CategoryConfig
 {
