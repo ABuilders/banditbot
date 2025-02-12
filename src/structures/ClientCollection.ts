@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-11 19:35:04
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:52:33
+ */
+
 import { Collection } from "discord.js";
 
 type EntryType<K extends keyof any, V> = [K, V] | [K, V][] | Record<K, V>;

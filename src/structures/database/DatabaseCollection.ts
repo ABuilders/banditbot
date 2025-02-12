@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-11 19:28:00
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:52:21
+ */
+
 import { Collection } from "discord.js";
 import { DatabaseManager } from "./DatabaseManager";
 import { QuickDB } from "quick.db";

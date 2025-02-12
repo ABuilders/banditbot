@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 19:14:54
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:53:21
+ */
+
 import {ActivityOptions, ActivityType } from "discord.js";
 import { MainConfig, OmitMultiple } from "../typings";
 import { YamlConfiguration } from "./configuration/YamlConfiguration";

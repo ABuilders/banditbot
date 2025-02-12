@@ -2,7 +2,14 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 17:37:55
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-10 22:31:48
+ * @ Modified time: 2025-02-12 14:52:13
+ */
+
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 17:37:55
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:52:06
  */
 
 import { CommandBase } from "../bases/command/CommandBase";
@@ -23,7 +30,8 @@ export class CommandHandler implements IHandler<CommandBase>
 
     load(dir: string): CommandBase[]
     {
-        const pathSrc = path.join(process.cwd(), "src", dir);
+        const srcPath = path.join(process.cwd(), "src");
+        const pathSrc = dir.startsWith(srcPath) ? dir : path.join(srcPath, dir);
         const dirContents = fs.readdirSync(pathSrc, { encoding: "utf-8", withFileTypes: true });
         const commands: CommandBase[] = [];
 
@@ -31,13 +39,16 @@ export class CommandHandler implements IHandler<CommandBase>
         {
             if (element.isDirectory())
             {
-                throw new Error("Loading commands from directories isn't supported!");
+                const dirPath = path.join(pathSrc, element.name);
+                commands.push(...this.load(dirPath));
+                continue;
             }
 
             ExceptionalLogger.getInstance().info("Loading " + CommandHandler.name + " Element: " + element.name);
             const e: any = require(path.join(pathSrc, element.name));
             const initializedClass = new e.default();
-            if (!initializedClass || !this.containsDetails(initializedClass)) {
+            if (!initializedClass || !this.containsDetails(initializedClass))
+            {
                 ExceptionalLogger.getInstance().debug("Invalid " + CommandHandler.name + " Element Information for " + element.name);
                 continue;
             }

@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 19:27:31
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:52:41
+ */
+
 import { Collection } from "discord.js";
 
 export class ClientRegistry<V> extends Collection<string, V> {

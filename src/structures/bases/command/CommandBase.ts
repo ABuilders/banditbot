@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 21:33:03
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:53:57
+ */
+
 import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
 import { Promisified } from "../../../typings";
 import { BanditEngine } from "../../../BanditEngine";

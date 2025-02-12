@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-11 19:30:34
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:53:51
+ */
+
 import YAML from "yaml";
 import { YamlSchema } from "../../typings";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";

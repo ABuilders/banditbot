@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 21:49:11
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:53:14
+ */
+
 import { REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes } from "discord.js";
 import { BanditClient } from "../BanditClient";
 import { ExceptionalLogger } from "./ExceptionalLogger";

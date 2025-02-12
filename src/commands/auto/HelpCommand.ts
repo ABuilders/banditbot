@@ -1,15 +1,22 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 23:13:33
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:54:27
+ */
+
 import
-    {
-        ChatInputCommandInteraction,
-        SlashCommandBuilder,
-        EmbedBuilder,
-        ColorResolvable,
-        ButtonStyle,
-        ButtonInteraction,
-        ComponentType,
-        ActionRowBuilder,
-        ButtonBuilder
-    } from "discord.js";
+{
+    ChatInputCommandInteraction,
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ColorResolvable,
+    ButtonStyle,
+    ButtonInteraction,
+    ComponentType,
+    ActionRowBuilder,
+    ButtonBuilder
+} from "discord.js";
 import { CommandBase, EnumCommandCategory, EnumCommandCategoryType } from "../../structures";
 
 interface CategoryConfig

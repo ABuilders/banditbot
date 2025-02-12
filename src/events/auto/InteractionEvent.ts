@@ -1,3 +1,10 @@
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 22:01:58
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:54:05
+ */
+
 import { Interaction } from "discord.js";
 import { ExceptionalLogger, useEvent } from "../../structures";
 import { BanditEngine } from "../../BanditEngine";

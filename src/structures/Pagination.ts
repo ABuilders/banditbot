@@ -1,4 +1,11 @@
-import { EmbedBuilder, MessageReaction, User, Interaction, ButtonStyle, ButtonInteraction, ComponentType, ChatInputCommandInteraction } from 'discord.js';
+/**
+ * @ Author: AbdullahCXD
+ * @ Create Time: 2025-02-10 23:15:37
+ * @ Modified by: AbdullahCXD
+ * @ Modified time: 2025-02-12 14:53:05
+ */
+
+import { EmbedBuilder, User, ButtonStyle, ButtonInteraction, ComponentType, ChatInputCommandInteraction } from 'discord.js';
 
 type PaginationData = {
     content: EmbedBuilder;
