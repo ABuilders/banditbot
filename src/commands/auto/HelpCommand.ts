@@ -1,32 +1,32 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
-import { CommandBase, EnumCommandCategory } from "../../structures";
-import { Pagination } from "../../structures/Pagination";
+import
+    {
+        ChatInputCommandInteraction,
+        SlashCommandBuilder,
+        EmbedBuilder,
+        ColorResolvable,
+        ButtonStyle,
+        ButtonInteraction,
+        ComponentType,
+        ActionRowBuilder,
+        ButtonBuilder
+    } from "discord.js";
+import { CommandBase, EnumCommandCategory, EnumCommandCategoryType } from "../../structures";
 
 interface CategoryConfig
 {
     icon: string;
     color: ColorResolvable;
-    description?: string;
-    emoji?: string;
+    description: string;
 }
 
 export default class HelpCommand extends CommandBase
 {
-    private readonly categoryConfigs: Record<EnumCommandCategory, CategoryConfig> = {
+    private readonly categoryConfigs: Record<EnumCommandCategoryType, CategoryConfig> = {
         [EnumCommandCategory.Core]: {
-            icon: "💡",
-            color: "#5865F2", // Discord Blurple
-            description: "Essential commands for the bot",
-            emoji: "🎯"
-        },
-        // Add other categories with their configs
-    };
-
-    private readonly defaultConfig: CategoryConfig = {
-        icon: "📜",
-        color: "#2D3136", // Dark theme color
-        description: "Additional commands",
-        emoji: "✨"
+            icon: "⚡",
+            color: "#5865F2",
+            description: "Core features and essentials"
+        }
     };
 
     constructor()
@@ -34,12 +34,18 @@ export default class HelpCommand extends CommandBase
         super(
             new SlashCommandBuilder()
                 .setName("help")
-                .setDescription("📚 Browse through available commands")
+                .setDescription("View all available commands")
                 .addStringOption(option =>
                     option
                         .setName("category")
-                        .setDescription("Filter commands by category")
+                        .setDescription("Filter by category")
                         .setRequired(false)
+                        .addChoices(
+                            ...Object.keys(EnumCommandCategory).map(cat => ({
+                                name: cat,
+                                value: cat.toLowerCase()
+                            }))
+                        )
                 ),
             EnumCommandCategory.Core
         );
@@ -49,61 +55,35 @@ export default class HelpCommand extends CommandBase
     {
         try
         {
-            if (!interaction.deferred && !interaction.replied)
-            {
-                await interaction.deferReply();
-            }
-
+            await interaction.deferReply();
             const selectedCategory = interaction.options.getString("category")?.toLowerCase();
             const commandMap = this.getEngine().getClient(true).getCommandMap();
             const categorizedCommands = this.categorizeCommands(commandMap);
 
-            // Filter categories if a specific one was requested
-            const categoriesToShow = selectedCategory
-                ? Object.entries(categorizedCommands).filter(([category]) =>
-                    category.toLowerCase() === selectedCategory)
-                : Object.entries(categorizedCommands);
-
-            if (categoriesToShow.length === 0)
-            {
-                await interaction.editReply({
-                    content: `No commands found${selectedCategory ? ` for category "${selectedCategory}"` : ''}.`
-                });
-                return;
-            }
-
-            const pages = this.createPages(categoriesToShow, interaction);
-            const paginator = new Pagination(interaction.user, pages, 60000);
-            await paginator.start(interaction);
-
+            const pages = await this.createPages(categorizedCommands, interaction);
+            await this.startPagination(interaction, pages);
         } catch (error)
         {
             console.error("Error in help command:", error);
-            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-
-            if (!interaction.replied)
-            {
-                await interaction.editReply({
-                    content: `Failed to display help menu: ${errorMessage}`
-                });
-            }
+            await interaction.editReply({
+                content: "❌ Couldn't load commands. Try again later."
+            });
         }
     }
 
-    private categorizeCommands(commandMap: Map<string, CommandBase>): Record<EnumCommandCategory, CommandBase[]>
+    private categorizeCommands(commandMap: Map<string, CommandBase>): Record<EnumCommandCategoryType, CommandBase[]>
     {
-        const categorized: Record<EnumCommandCategory, CommandBase[]> = Object.values(EnumCommandCategory).reduce(
+        const categorized: Record<EnumCommandCategoryType, CommandBase[]> = Object.values(EnumCommandCategory).reduce(
             (acc, category) => ({ ...acc, [category]: [] }),
-            {} as Record<EnumCommandCategory, CommandBase[]>
+            {} as Record<EnumCommandCategoryType, CommandBase[]>
         );
 
-        commandMap.forEach((command) =>
+        for (const command of commandMap.values())
         {
             const category = command.category || EnumCommandCategory.Core;
             categorized[category].push(command);
-        });
+        }
 
-        // Sort commands alphabetically within each category
         Object.values(categorized).forEach(commands =>
         {
             commands.sort((a, b) =>
@@ -114,57 +94,110 @@ export default class HelpCommand extends CommandBase
         return categorized;
     }
 
-    private createPages(
-        categorizedCommands: [string, CommandBase[]][],
+    private async createPages(
+        categorizedCommands: Record<EnumCommandCategoryType, CommandBase[]>,
         interaction: ChatInputCommandInteraction<"cached">
-    ): { content: EmbedBuilder }[]
+    ): Promise<EmbedBuilder[]>
     {
-        return categorizedCommands.map(([category, commands]) =>
+        const pages: EmbedBuilder[] = [];
+
+        for (const [category, commands] of Object.entries(categorizedCommands))
         {
-            const categoryEnum = category as unknown as EnumCommandCategory;
-            const config = this.categoryConfigs[categoryEnum] || this.defaultConfig;
+            if (commands.length === 0) continue;
 
-            const description = [
-                `${config.emoji} ${config.description || ""}`,
-                "",
-                "# Available Commands",
-                "",
-                ...commands.map(command =>
-                {
-                    const data = command.getDataStructure();
-                    const options = data.options?.length
-                        ? `\`${data.options.map(opt => opt.toJSON().name).join(', ')}\``
-                        : '';
-                    return [
-                        `### /${data.name} ${options}`,
-                        `> ${data.description || "No description available."}`,
-                        ""
-                    ].join('\n');
+            const categoryEnum = category as EnumCommandCategoryType;
+            const config = this.categoryConfigs[categoryEnum];
+
+            const commandsList = commands.map(cmd =>
+            {
+                const data = cmd.getDataStructure();
+                const options = data.options?.length
+                    ? ` ${data.options.map(opt => `\`${opt.toJSON().name}\``).join(' ')}`
+                    : '';
+
+                return `\`/${data.name}\`${options}\n${data.description}`;
+            }).join('\n\n');
+
+            const embed = new EmbedBuilder()
+                .setColor(config.color)
+                .setAuthor({
+                    name: `${config.icon} ${category.toUpperCase()}`,
+                    iconURL: interaction.client.user.displayAvatarURL()
                 })
-            ].join('\n');
+                .setDescription([
+                    config.description,
+                    '',
+                    commandsList
+                ].join('\n'))
+                .setFields({
+                    name: '\u200b',
+                    value: `${commands.length} commands available`,
+                    inline: false
+                });
 
-            const totalCommands = commands.length;
-            const pageNumber = categorizedCommands.indexOf([category, commands]) + 1;
+            pages.push(embed);
+        }
 
-            return {
-                content: new EmbedBuilder()
-                    .setTitle(`${config.icon} ${category.toUpperCase()} COMMANDS`)
-                    .setDescription(description)
-                    .setColor(config.color)
-                    .setTimestamp()
-                    .addFields([
-                        {
-                            name: '📊 Statistics',
-                            value: `\`\`\`• Commands: ${totalCommands}\n• Category: ${category}\n• Page: ${pageNumber}/${categorizedCommands.length}\`\`\``,
-                            inline: false
-                        }
-                    ])
-                    .setFooter({
-                        text: `Tip: Use /command for detailed information • Page ${pageNumber}/${categorizedCommands.length}`,
-                        iconURL: interaction.client.user.displayAvatarURL()
-                    })
-                    .setThumbnail(interaction.client.user.displayAvatarURL())
-            };
+        return pages;
+    }
+
+    private async startPagination(
+        interaction: ChatInputCommandInteraction<"cached">,
+        pages: EmbedBuilder[]
+    ): Promise<void>
+    {
+        let currentPage = 0;
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('previous')
+                    .setEmoji('◀️')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('next')
+                    .setEmoji('▶️')
+                    .setStyle(ButtonStyle.Secondary)
+            );
+
+        const response = await interaction.editReply({
+            embeds: [pages[currentPage].setFooter({
+                text: `Page ${currentPage + 1}/${pages.length}`,
+                iconURL: interaction.client.user.displayAvatarURL()
+            })],
+            components: [row]
+        });
+
+        const collector = response.createMessageComponentCollector({
+            componentType: ComponentType.Button,
+            time: 60000,
+            filter: (i) => i.user.id === interaction.user.id
+        });
+
+        collector.on('collect', async (i: ButtonInteraction) =>
+        {
+            if (i.customId === 'previous')
+            {
+                currentPage = currentPage > 0 ? currentPage - 1 : pages.length - 1;
+            } else if (i.customId === 'next')
+            {
+                currentPage = currentPage < pages.length - 1 ? currentPage + 1 : 0;
+            }
+
+            await i.update({
+                embeds: [pages[currentPage].setFooter({
+                    text: `Page ${currentPage + 1}/${pages.length}`,
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })],
+                components: [row]
+            });
+        });
+
+        collector.on('end', async () =>
+        {
+            await interaction.editReply({
+                components: []
+            });
         });
     }
 }

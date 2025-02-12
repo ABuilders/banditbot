@@ -2,17 +2,19 @@ import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOn
 import { Promisified } from "../../../typings";
 import { BanditEngine } from "../../../BanditEngine";
 
-export enum EnumCommandCategory {
-    Core
-}
+export const EnumCommandCategory: Record<EnumCommandCategoryType, EnumCommandCategoryType> = {
+    Core: "Core"
+};
+
+export type EnumCommandCategoryType = "Core";
 
 export abstract class CommandBase {
 
     private dataStructure: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
     private engine: BanditEngine;
-    public category: EnumCommandCategory;
+    public category: EnumCommandCategoryType;
 
-    constructor(dataStructure: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder, category: EnumCommandCategory) {
+    constructor(dataStructure: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder, category: EnumCommandCategoryType) {
         this.dataStructure = dataStructure;
         this.engine = BanditEngine.createEngine();
         this.category = category;
