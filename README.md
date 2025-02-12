@@ -1,6 +1,8 @@
-# Bandit Bot 🤖
+# Bandit Bot 🤖 (BASE)
 
 Welcome to **Bandit Bot**, the ultimate Discord bot designed to enhance your server’s security, moderation, and automation! Built with **TypeScript** and powered by **discord.js**, Bandit Bot provides a seamless experience for managing your community with efficiency and precision.
+
+This is the base version for every single bot made by ABuilders.
 
 ## 🚀 Features
 
