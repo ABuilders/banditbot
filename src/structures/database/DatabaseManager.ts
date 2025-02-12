@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-11 19:27:33
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 17:04:08
+ * @ Modified time: 2025-02-12 18:13:42
  */
 
 import { MySQLDriver, QuickDB } from "quick.db";
@@ -30,7 +30,7 @@ export class DatabaseManager
     {
         ExceptionalLogger.getInstance().info("Loading DatabaseManager...");
         const main = this.engine.getMainConfiguration();
-        const db = main.get("database");
+        const db = main.get("database") as Record<string, any>;
         if (!db)
         {
             ExceptionalLogger.getInstance().warn("Skipping database intialization.");

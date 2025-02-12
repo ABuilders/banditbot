@@ -1,4 +1,22 @@
-database:
-  type: sqlite
-  information:
-    file: main.banditdb
+# 🛠 Bandit Bot Configuration File  
+# This file contains essential settings for the bot, including database setup and developer access.  
+# Modify these values carefully to ensure proper functionality.
+
+database:  
+  type: sqlite  # The type of database being used (SQLite in this case).  
+  information:  
+    file: main.banditdb  # The filename where the database is stored.  
+
+####### IMPORTANT NOTICE #######  
+# Granting developer access does NOT override permissions for moderation, utility,  
+# or any other commands in external servers.  
+#  
+# Misuse of this access to bypass server rules is strictly against our bot's policies.  
+# We appreciate your understanding.  
+#  
+# Developer access is intended solely for testing commands in the development server.  
+# Most testing commands do not alter any settings in user servers; they are used  
+# purely to verify the bot's functionality.  
+####### IMPORTANT NOTICE #######  
+developers:
+  - 1262884744111067157  # List of developer user IDs who have special access or permissions.  

@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 19:14:54
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 18:04:12
+ * @ Modified time: 2025-02-12 18:13:06
  */
 
 import {ActivityOptions, ActivityType, ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message } from "discord.js";
@@ -79,6 +79,9 @@ export function getDefaultMainConfigContent(): string {
             information: {
                 file: "main.banditdb"
             }
-        }
+        },
+        developers: [
+            "1262884744111067157"
+        ]
     });
 }

@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 17:56:01
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-11 20:23:19
+ * @ Modified time: 2025-02-12 18:12:52
  */
 
 import { Awaitable, ClientEvents, ClientOptions } from "discord.js";
@@ -55,5 +55,7 @@ export type MainConfig = {
             database?: string;
         }
 
-    }
+    },
+
+    developers: string[]
 }

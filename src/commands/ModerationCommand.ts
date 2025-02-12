@@ -1,7 +1,6 @@
-import { ChatInputCommandInteraction, PermissionResolvable, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionResolvable } from "discord.js";
 import { CommandBase, CommandDataStructure, createBanditEmbed, EnumCommandCategoryType, replyEmbed } from "../structures";
 import { PunishmentManager } from "../structures/punishments/PunishmentManager";
-import { Promisified } from "../typings";
 
 export abstract class ModerationCommand extends CommandBase {
 
@@ -21,7 +20,7 @@ export abstract class ModerationCommand extends CommandBase {
         if (!interaction.member.permissions.has(this.requiredPermission)) return replyEmbed(
             interaction,
             createBanditEmbed()
-                .setDescription(`\`\`\`md\n# Invalid Permissions! You must have ${this.requiredPermission}`)
+                .setDescription(`\`\`\`md\n# Invalid Permissions! You must have ${this.requiredPermission}\`\`\``)
                 .setColor("Red")
         );
         await this.onModerationExecute(interaction);
