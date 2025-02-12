@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-11 19:27:33
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:52:16
+ * @ Modified time: 2025-02-12 17:04:08
  */
 
 import { MySQLDriver, QuickDB } from "quick.db";
@@ -11,12 +11,15 @@ import { BanditEngine } from "../../BanditEngine";
 import path from "path";
 import { DatabaseCollection } from "./DatabaseCollection";
 
+export type FindMethod<K extends string, V> = (value: V, key: K, databaseManager: DatabaseManager, collection: DatabaseCollection<K, V>) => boolean;
+
 export class DatabaseManager
 {
 
     private db!: QuickDB;
     private engine: BanditEngine = BanditEngine.createEngine();
     private connected: boolean = false;
+    private tables: string[] = [];
 
     constructor()
     {
@@ -83,6 +86,12 @@ export class DatabaseManager
         ExceptionalLogger.getInstance().info("Successfully finished initializing DatabaseManager!");
     }
 
+    public initializeCollection<K extends string, V>(table: string): DatabaseCollection<K, V> {
+        this.checkTable(table);
+        const collection = new DatabaseCollection<K, V>(this, table);
+        return collection;
+    }
+
     public getCollection<K extends string, V>(table: string | DatabaseCollection<K, V>, options?: { createIfNotExists?: boolean }): DatabaseCollection<K, V>
     {
 
@@ -109,7 +118,10 @@ export class DatabaseManager
 
     private checkTable(table: string)
     {
+        if (this.tables.includes(table)) return false;
         this.db.table(table);
+        this.tables.push(table);
+        return true;
     }
 
     public async set<K extends string, V>(table: string, key: K, value: V): Promise<void>
@@ -137,9 +149,17 @@ export class DatabaseManager
         return collection.get(key) ?? Default;
     }
 
-    public has<K extends string, V>(table: string, key: K): boolean | undefined;
-    public has<K extends string, V>(table: DatabaseCollection<K, V>, key: K): boolean | undefined
-    public has<K extends string, V>(table: string | DatabaseCollection<K, V>, key: K): boolean | undefined
+    public find<K extends string, V>(table: string, callback: FindMethod<K, V>): V | undefined;
+    public find<K extends string, V>(table: DatabaseCollection<K, V>, callback: FindMethod<K, V>): V | undefined
+    public find<K extends string, V>(table: string | DatabaseCollection<K, V>, callback: FindMethod<K, V>): V | undefined
+    {
+        let collection: DatabaseCollection<K, V> = this.getCollection(table);
+        return collection.find((v, k, c) => callback(v, k, this, c));
+    } 
+
+    public has<K extends string, V>(table: string, key: K): boolean;
+    public has<K extends string, V>(table: DatabaseCollection<K, V>, key: K): boolean
+    public has<K extends string, V>(table: string | DatabaseCollection<K, V>, key: K): boolean
     {
         let collection: DatabaseCollection<K, V> = this.getCollection(table);
         return collection.has(key);

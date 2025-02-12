@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 17:55:00
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:53:32
+ * @ Modified time: 2025-02-12 16:32:16
  */
 
 import { BanditClient } from "./BanditClient";
@@ -101,16 +101,16 @@ export class BanditEngine
         }
     }
 
-    getClient(check: false): BanditClient | undefined;
-    getClient(check: true): BanditClient;
-    getClient(check: boolean): BanditClient | undefined
+    getClient<AsReady extends boolean = boolean>(check: false): BanditClient<AsReady> | undefined;
+    getClient<AsReady extends boolean = boolean>(check: true): BanditClient<AsReady>;
+    getClient<AsReady extends boolean = boolean>(check: boolean): BanditClient<AsReady> | undefined
     {
         if (check)
         {
-            if (this.client) return this.client;
+            if (this.client) return this.client as BanditClient<AsReady>;
         } else
         {
-            return this.client;
+            return this.client as BanditClient<AsReady>;
         }
     }
 

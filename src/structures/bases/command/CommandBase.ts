@@ -2,26 +2,29 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 21:33:03
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 14:53:57
+ * @ Modified time: 2025-02-12 17:15:55
  */
 
-import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { Promisified } from "../../../typings";
 import { BanditEngine } from "../../../BanditEngine";
 
 export const EnumCommandCategory: Record<EnumCommandCategoryType, EnumCommandCategoryType> = {
-    Core: "Core"
+    Core: "Core",
+    Moderation: "Moderation",
+    Utility: "Utility"
 };
 
-export type EnumCommandCategoryType = "Core";
+export type EnumCommandCategoryType = "Core" | "Moderation" | "Utility";
+export type CommandDataStructure = SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
 
 export abstract class CommandBase {
 
-    private dataStructure: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
+    private dataStructure: CommandDataStructure;
     private engine: BanditEngine;
     public category: EnumCommandCategoryType;
 
-    constructor(dataStructure: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder, category: EnumCommandCategoryType) {
+    constructor(dataStructure: CommandDataStructure, category: EnumCommandCategoryType) {
         this.dataStructure = dataStructure;
         this.engine = BanditEngine.createEngine();
         this.category = category;

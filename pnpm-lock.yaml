@@ -29,6 +29,9 @@ importers:
       mongoose:
         specifier: ^8.10.0
         version: 8.10.0
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       mysql2:
         specifier: ^3.12.0
         version: 3.12.0
@@ -54,6 +57,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.15
         version: 4.17.15
+      '@types/ms':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/node':
         specifier: ^22.13.1
         version: 22.13.1
@@ -152,6 +158,9 @@ packages:
 
   '@types/lodash@4.17.15':
     resolution: {integrity: sha512-w/P33JFeySuhN6JLkysYUK2gEmy9kHHFN7E8ro0tkfmlDOgxBDzWEZ/J8cWA+fHqFevpswDTFZnDx+R9lbL6xw==}
+
+  '@types/ms@2.1.0':
+    resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
   '@types/node-cron@3.0.11':
     resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
@@ -870,6 +879,8 @@ snapshots:
   '@types/figlet@1.7.0': {}
 
   '@types/lodash@4.17.15': {}
+
+  '@types/ms@2.1.0': {}
 
   '@types/node-cron@3.0.11': {}
 

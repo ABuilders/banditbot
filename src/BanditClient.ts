@@ -2,15 +2,15 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 17:33:34
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-10 22:00:05
+ * @ Modified time: 2025-02-12 16:33:05
  */
 
-import { Client, ClientEvents, ClientUser, Collection, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
+import { Client, ClientEvents, ClientUser, Collection, Guild, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import { BanditEvents, BanditOptions, Promisified } from "./typings";
 import * as Figlet from "figlet";
 import { CommandBase, ExceptionalBox, isDevelopmentEnvironment } from "./structures";
 
-export class BanditClient extends Client
+export class BanditClient<Ready extends boolean = boolean> extends Client<Ready>
 {
     private commandMap: Collection<string, CommandBase> = new Collection();
     private commandJSONArray: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
@@ -98,5 +98,9 @@ export class BanditClient extends Client
         {
             return this.user;
         }
+    }
+
+    async fetchGuild(guildId: string): Promise<Guild> {
+        return await this.guilds.fetch(guildId);
     }
 }

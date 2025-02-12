@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-10 23:13:33
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 15:44:47
+ * @ Modified time: 2025-02-12 16:20:38
  */
 
 import
@@ -29,10 +29,20 @@ interface CategoryConfig
 export default class HelpCommand extends CommandBase
 {
     private readonly categoryConfigs: Record<EnumCommandCategoryType, CategoryConfig> = {
-        [EnumCommandCategory.Core]: {
+        Core: {
             icon: "⚡",
             color: "#5865F2",
             description: "Core features and essentials"
+        },
+        Utility: {
+            icon: "🔨",
+            color: "Blue",
+            description: "Utility features and essentials"
+        },
+        Moderation: {
+            icon: "🛡️",
+            color: "Red",
+            description: "Moderation features and essentails"
         }
     };
 

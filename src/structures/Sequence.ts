@@ -2,7 +2,7 @@
  * @ Author: AbdullahCXD
  * @ Create Time: 2025-02-12 14:57:36
  * @ Modified by: AbdullahCXD
- * @ Modified time: 2025-02-12 15:40:43
+ * @ Modified time: 2025-02-12 17:44:03
  */
 
 import { ChatInputCommandInteraction, EmbedBuilder, Message } from "discord.js";
@@ -13,7 +13,7 @@ import { Promisified } from "../typings";
 import { ExceptionalLogger } from "./ExceptionalLogger";
 import { createBanditEmbed } from "./Utils";
 
-export type SequenceCallback<Arguments> = (...args: Arguments[]) => Promisified<unknown>;
+export type SequenceCallback<Arguments> = (setResultMessage: (message: string) => void,...args: Arguments[]) => Promisified<unknown>;
 
 export interface SequenceInfo<Arguments> {
 
@@ -25,8 +25,8 @@ export interface SequenceInfo<Arguments> {
 
 export class Sequence {
 
-    static createSequence(response: ChatInputCommandInteraction<"cached"> | Message<true>, description: string) {
-        return new Sequence(response, description);
+    static createSequence(response: ChatInputCommandInteraction<"cached"> | Message<true>, description: string, deferred: boolean) {
+        return new Sequence(response, description, deferred);
     }
 
     private engine: BanditEngine;
@@ -40,7 +40,7 @@ export class Sequence {
     private currentSequence?: SequenceInfo<any>;
     private contentMessage?: Message<true>;
         
-    constructor(private response: ChatInputCommandInteraction<"cached"> | Message<true>, private description: string) {
+    constructor(private response: ChatInputCommandInteraction<"cached"> | Message<true>, private description: string, private deferred: boolean) {
         this.engine = BanditEngine.createEngine();
         this.client = this.engine.getClient(true);
         this.sequencesCollection = new ClientCollection();
@@ -80,6 +80,10 @@ export class Sequence {
             const sequenceInfo = this.getSequencesCollection().getIndex(i);
             if (!sequenceInfo) continue;
             const [ key, value ] = sequenceInfo;
+            let resultMessage;
+            const setResultMessage = (message: string) => {
+                resultMessage = message;
+            }
 
             if (key === value.id) // They are gonna be the same, just for checking so no invalid sequences are added into the collection
             {
@@ -87,7 +91,7 @@ export class Sequence {
                 this.currentSequence = value;
 
                 try {
-                    await value.callback();
+                    await value.callback(setResultMessage);
                     this.successfulSequences++;
                 } catch (err) {
                     ExceptionalLogger.getInstance().throw(err as Error);
@@ -97,16 +101,16 @@ export class Sequence {
                     this.finishedSequences++;
                 }
 
-                await this.updateContent();
+                await this.updateContent(resultMessage);
             }
         }
 
         this.currentSequence = undefined;
     }
 
-    async updateContent() {
+    async updateContent(resultMessage?: string) {
 
-        const embed = this.generateEmbed();
+        const embed = this.generateEmbed(resultMessage);
         const options = {
             embeds: [embed]
         };
@@ -114,7 +118,7 @@ export class Sequence {
         if (!this.contentMessage) {
 
             if (this.response instanceof ChatInputCommandInteraction) {
-                if (!this.response.deferred || !this.response.replied) {
+                if (!this.response.deferred && !this.response.replied) {
                     await this.response.reply(options);
 
                     this.contentMessage = await this.response.fetchReply();
@@ -133,7 +137,7 @@ export class Sequence {
 
     }
 
-    generateEmbed() {
+    generateEmbed(resultMessage?: string) {
 
         let type: "Successful" | "Failing";
         let embed: EmbedBuilder;
@@ -149,14 +153,17 @@ export class Sequence {
                 text: "Bandit Sequence Manager",
                 iconURL: this.getClient().getClientUser(true).displayAvatarURL()
             })
-            .setTitle("🎯 Sequence Status")
+            .setTitle("🎯 Sequence Rotation")
             .setDescription([
                 '```md',
                 `# ${this.getBaseDescription()}`,
                 '```',
                 '',
                 '**🔄 Current Sequence**',
-                `${this.currentSequence?.description ?? "*No active sequence.*"}`,
+                `> ${this.currentSequence?.description ?? "*No active sequence.*"}`,
+                '',
+                `**📝 Result Message from Sequence**`,
+                `> ${resultMessage ?? "No result message."}`,
                 '',
                 `**${type === "Successful" ? "✅ Status: Success" : "❌ Status: Failed"}**`,
                 type === "Successful"
